@@ -9,14 +9,26 @@
     <div>
       <ul>
         <li v-for="personName of names" v-bind:key="personName['.key']">
-          <div v-if="personName.edit">
-                        <p>{{personName.name}}</p>
+          <div v-if="!personName.edit">
+              <p>{{personName.name}}</p>
             <button @click="removeName(personName['.key'])">
               Eliminar
             </button>
             <button @click="setEditName(personName['.key'])">
               Editar
             </button>
+          </div >          
+          <div v-else> 
+            <input type="text" v-model="personName.name"/> 
+            <button @click="saveEdit(personName)">Save
+
+            </button>
+            <button @click="cancelEdit(personName['.key'])">Cancel
+
+            </button>
+          </div>
+          <div>
+            <label></label>
           </div>
         </li>
       </ul>
@@ -46,9 +58,15 @@ export default {
     },
     setEditName(key) {
       namesRef.child(key).update({ edit: true });
+    },
+    cancelEdit(key) {
+      namesRef.child(key).update({ edit: false });
+    },
+    saveEdit(person){
+      const key = person['.key'];
+      namesRef.child(key).set({name: person.name, edit: false})
     }
   }
-
 };
 </script>
 
